@@ -11,7 +11,7 @@ import Link from 'next/link'
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
   const router = useRouter()
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -19,8 +19,9 @@ export default function Login() {
     try {
       await signInWithEmailAndPassword(auth, email, password)
       router.push('/home')
-    } catch (error) {
-      setError('Failed to log in. Please check your credentials.')
+    } catch (error: unknown) {
+      console.error('Login error:', error)
+      setErrorMessage('Failed to log in. Please check your credentials.')
     }
   }
 
@@ -60,7 +61,7 @@ export default function Login() {
             </div>
           </div>
         </form>
-        {error && <p className="mt-4 text-red-500">{error}</p>}
+        {errorMessage && <p className="mt-4 text-red-500">{errorMessage}</p>}
       </div>
     </div>
   )

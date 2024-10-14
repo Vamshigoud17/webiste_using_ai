@@ -1,17 +1,18 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from 'next/navigation'
+import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ShoppingCart, Menu, User, Package, LogOut } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { auth, db } from '../../firebase'
 import { collection, getDocs } from "firebase/firestore"
-import { signOut } from "firebase/auth"
-import { useRouter } from 'next/navigation'
 
 interface Item {
   id: string;
@@ -29,6 +30,16 @@ export default function BusinessWebsite() {
   const [searchTerm, setSearchTerm] = useState("")
   const [cart, setCart] = useState<CartItem[]>([])
   const router = useRouter()
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        router.push('/')
+      }
+    })
+
+    return () => unsubscribe()
+  }, [router])
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -164,9 +175,11 @@ export default function BusinessWebsite() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
           {items.map((item) => (
             <div key={item.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-              <img
+              <Image
                 src={`/placeholder.svg?height=200&width=300`}
                 alt={item.name}
+                width={300}
+                height={200}
                 className="w-full h-48 object-cover"
               />
               <div className="p-4">

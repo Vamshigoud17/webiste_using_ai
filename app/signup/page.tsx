@@ -14,13 +14,13 @@ export default function Signup() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [mobile, setMobile] = useState('')
-  const [error, setError] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
   const router = useRouter()
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
     if (mobile.length !== 10) {
-      setError('Mobile number must be 10 digits')
+      setErrorMessage('Mobile number must be 10 digits')
       return
     }
     try {
@@ -31,8 +31,9 @@ export default function Signup() {
         mobile
       })
       router.push('/home')
-    } catch (error) {
-      setError('Failed to create an account. Please try again.')
+    } catch (error: unknown) {
+      console.error('Signup error:', error)
+      setErrorMessage('Failed to create an account. Please try again.')
     }
   }
 
@@ -87,7 +88,7 @@ export default function Signup() {
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                className="w-full px-4 py-2 mt-2 border  rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                 required
               />
             </div>
@@ -97,7 +98,7 @@ export default function Signup() {
             </div>
           </div>
         </form>
-        {error && <p className="mt-4 text-red-500">{error}</p>}
+        {errorMessage && <p className="mt-4 text-red-500">{errorMessage}</p>}
       </div>
     </div>
   )
